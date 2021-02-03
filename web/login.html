@@ -1,0 +1,85 @@
+﻿
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>管理员登陆</title>
+    <meta name="keywords" content="管理员登陆">
+    <meta name="description" content="管理员登陆">
+    <link rel="stylesheet" href="./static/layui/css/layui.css">
+    <link rel="stylesheet" href="./static/admin/css/login.css">
+    <script src="./static/layui/layui.js"></script>
+</head>
+
+<body id="login">
+    <div class="login">
+        <h2>管理员登陆</h2>
+        <form class="layui-form" method="post" target="_blank" action="">
+            <div class="layui-form-item">
+                <input type="username" name="user" placeholder="用户名" class="layui-input">
+                <i class="layui-icon input-icon">&#xe66f;</i>
+            </div>
+            <div class="layui-form-item">
+                <input type="password" name="pwd" placeholder="密码" class="layui-input">
+                <i class="layui-icon input-icon">&#xe673;</i>
+            </div>
+            <div class="layui-form-item">
+                <input type="checkbox" name="box" lay-skin="primary" title="记住密码" checked=""> 
+                <a class="back" href="javascript:;" style="margin-top: 10px">忘记密码</a>
+            </div>
+            <div class="layui-form-item">
+                <button style="width: 100%" class="layui-btn" lay-submit lay-filter="login">立即登录</button>
+            </div>
+        </form>
+
+        <script>
+
+
+            layui.use('form', function () {
+                var form = layui.form,
+                    layer = layui.layer,
+                    $ = layui.jquery;
+
+                form.on('submit(login)', function (data) {
+
+                    data = data.field;
+                    if (data.user == '') {
+                        layer.msg('用户名不能为空');
+                        return false;
+                    }
+                    if (data.pwd == '') {
+                        layer.msg('密码不能为空');
+                        return false;
+                    }
+                   
+                   
+                    var index = layer.load({
+                        shade: 0.5,
+                        time: 0,
+                    });
+                    $.ajax({
+                        url:"passport/v1/login",
+                        type: "post",
+                        dataType: "json",
+                        data: { "name": data.user, "password": data.pwd },
+                        //验证用户名是否可用
+                        success: function (data) {
+                            
+                            if (data.code ==200) {
+                                window.location.href = 'index.html';
+                            } else {
+                                layer.msg(data.msg)
+                            }
+                            layer.close(index);
+                        }
+                    })
+                    return false;
+                });
+            });
+        </script>
+    </div>
+</body>
+
+</html>
